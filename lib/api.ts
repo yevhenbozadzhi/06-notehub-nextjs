@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { Note } from "@/types/note";
+import type { NewNoteData, Note } from "@/types/note";
 
 const token = process.env.NEXT_PUBLIC_NOTEHUB_TOKEN;
 
@@ -10,11 +10,11 @@ const instance = axios.create({
   },
 });
 
-interface FetchNotesResponse {
-  notes: Note[];
+
+export interface FetchNotesResponse {
   total: number;
-  page: number;
-  perPage: number;
+  notes: Note[];
+ totalPages: number,
 }
 
 export const fetchNotes = async (
@@ -43,28 +43,10 @@ export const deleteNote = async (id: string): Promise<Note> => {
   return res.data;
 };
 
-export interface NoteFormProps {
-  onClose: () => void;
-}
+
 
 export const fetchNoteById = async (id: string): Promise<Note> => {
   const res = await instance.get<Note>(`/notes/${id}`);
   return res.data;
 };
 
-export interface NewNoteData {
-  title: string;
-  content: string;
-  tag: string;
-}
-// type PropsByID = {
-//   params: Promise<{ id: string }>;
-// };
-
-// const fetchNotesByID = async ({params}: PropsByID) => {
-//   const { id } = await params;
-//   console.log('note id:', id);
-//   return <div>NoteDetails</div>
-// }
-
-// export default fetchNotesByID;

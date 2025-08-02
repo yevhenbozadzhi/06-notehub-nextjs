@@ -8,31 +8,15 @@ import SearchBox from "../../components/SearchBox/SearchBox";
 import NoteForm from "../../components/NoteForm/NoteForm";
 import { useDebounce } from "use-debounce";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { fetchNotes } from "../../lib/api";
+import { fetchNotes, FetchNotesResponse } from "../../lib/api";
 import Pagination from "../../components/Pagination/Pagination";
-import { init } from "next/dist/compiled/webpack/webpack";
 import { Note } from "@/types/note";
 
-export interface NewNoteData {
-  title: string;
-  content: string;
-  tag: string;
+interface NotesClientProps {
+  initialData: FetchNotesResponse;
 }
 
- export interface FetchNoteResponse {
-  notes: Note[];
-  total: number;
-  page: number;
-  perPage: number;
-}
-
-
- interface NotesClientProps {
-  initialData: FetchNoteResponse;
-}
-
-export default function NotesClient({ initialData }: NotesClientProps
-) {
+export default function NotesClient({ initialData }: NotesClientProps) {
   const [isModalOpen, setModalOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
@@ -43,11 +27,11 @@ export default function NotesClient({ initialData }: NotesClientProps
     setPage(1);
   }, [debouncedSearchTerm]);
 
-  const { data, isLoading } = useQuery<FetchNoteResponse>({
+  const { data, isLoading, error } = useQuery<FetchNotesResponse>({
     queryKey: ["notes", page, debouncedSearchTerm],
     queryFn: () => fetchNotes(page, perPage, debouncedSearchTerm),
     placeholderData: keepPreviousData,
-    initialData: page === 1 && debouncedSearchTerm === '' ? initialData : undefined,
+    initialData: page === 1 && debouncedSearchTerm === "" ? initialData : undefined,
   });
 
   const openModal = () => setModalOpen(true);
@@ -63,12 +47,13 @@ export default function NotesClient({ initialData }: NotesClientProps
       </header>
 
       {isLoading && <strong className={css.loading}>Loading notes...</strong>}
+      {error && <p className={css.error}>Error loading notes: {error.message}</p>}
 
       {data && data.notes.length > 0 && <NoteList notes={data.notes} />}
 
-      {data && data.total > perPage && (
+      {data && data.totalPages > 1 && (
         <Pagination
-          pageCount={Math.ceil(data.total / perPage)}
+          pageCount={data.totalPages}
           currentPage={page}
           onPageChange={setPage}
         />
