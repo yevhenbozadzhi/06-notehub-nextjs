@@ -1,8 +1,10 @@
+import { ReactNode } from "react";
+
 export interface Note {
-  id: number;
+  tag: ReactNode;
+  id: string;
   title: string;
   content: string;
-  tag: string;
   createdAt: string;
     updatedAt: string;
 }
@@ -10,7 +12,6 @@ export interface Note {
 export interface NewNoteData {
   title: string;
   content: string;
-  tag: string;
 }
 
 export type NoteTag = 'Todo' | 'Work' | 'Personal' | 'Meeting' | 'Shopping';

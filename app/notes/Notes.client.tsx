@@ -10,14 +10,8 @@ import { useDebounce } from "use-debounce";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { fetchNotes } from "../../lib/api";
 import Pagination from "../../components/Pagination/Pagination";
-
-export interface Note {
-  id: number;
-  title: string;
-  content: string;
-  tag: string;
-  createdAt: string;
-}
+import { init } from "next/dist/compiled/webpack/webpack";
+import { Note } from "@/types/note";
 
 export interface NewNoteData {
   title: string;
@@ -25,14 +19,20 @@ export interface NewNoteData {
   tag: string;
 }
 
-interface FetchNoteResponse {
+ export interface FetchNoteResponse {
   notes: Note[];
   total: number;
   page: number;
   perPage: number;
 }
 
-export default function NotesClient() {
+
+ interface NotesClientProps {
+  initialData: FetchNoteResponse;
+}
+
+export default function NotesClient({ initialData }: NotesClientProps
+) {
   const [isModalOpen, setModalOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
@@ -47,6 +47,7 @@ export default function NotesClient() {
     queryKey: ["notes", page, debouncedSearchTerm],
     queryFn: () => fetchNotes(page, perPage, debouncedSearchTerm),
     placeholderData: keepPreviousData,
+    initialData: page === 1 && debouncedSearchTerm === '' ? initialData : undefined,
   });
 
   const openModal = () => setModalOpen(true);

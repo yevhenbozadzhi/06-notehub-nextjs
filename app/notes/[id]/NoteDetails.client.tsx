@@ -3,16 +3,17 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchNoteById } from "../../../lib/api";
 import css from "../../main.module.css";
-import type { Note } from "../Notes.client";
+import type { Note } from "../../../types/note";
 
 interface NoteDetailsProps {
-  noteId: number;
+  noteId: string;
 }
 
 export default function NoteDetailsClient({ noteId }: NoteDetailsProps) {
   const { data: note, isLoading, error } = useQuery<Note>({
     queryKey: ["note", noteId],
     queryFn: () => fetchNoteById(noteId.toString()),
+    refetchOnMount: false,
   });
 
   if (isLoading) return <p>Loading, please wait...</p>;
