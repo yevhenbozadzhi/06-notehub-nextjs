@@ -1,5 +1,5 @@
 export interface Note {
-  tag: string;
+  tag: NoteTag;
   id: string;
   title: string;
   content: string;
@@ -10,17 +10,10 @@ export interface Note {
 export interface NewNoteData {
   title: string;
   content: string;
-  tag: string
+  tag: NoteTag;
 }
+
 
 export type NoteTag = 'Todo' | 'Work' | 'Personal' | 'Meeting' | 'Shopping';
 
-export interface NoteFormProps {
-  onClose: () => void;
-}
 
-export interface NewNoteData {
-  title: string;
-  content: string;
-  tag: string;
-}
