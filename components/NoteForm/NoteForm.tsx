@@ -4,9 +4,12 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import css from "../../css/NoteForm.module.css";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-// import { addNote, type NoteFormProps } from "../../lib/api";
-import { NewNoteData, NoteFormProps } from "@/types/note";
+import { NewNoteData } from "@/types/note";
 import {addNote} from '@/lib/api'
+
+export interface NoteFormProps {
+  onClose: () => void;
+}
 
 
 const validationSchema = Yup.object({
